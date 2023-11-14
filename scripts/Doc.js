@@ -39,11 +39,20 @@ export default class Document {
   inputElement = this.$("input");
 
   /**
+   * Element responsible for displaying information smaller than pageGuide element under it
+   * @property
+   * @type {Element}
+   */
+  pageGuideDescriptionElement = this.$("pageGuideDescription");
+
+  /**
    * @constructor
    * the constructor will make changes to make the Doc ready for player to start the game
    */
   constructor() {
     this.pageGuideElement.textContent = "GET READY TO PLAY!";
+    this.pageGuideDescriptionElement.textContent =
+      "Game will start 3 seconds after you click on the input field";
   }
 
   /**
@@ -74,6 +83,7 @@ export default class Document {
   gameInit() {
     this.scoreBoardReset();
     this.pageGuideElement.textContent = "Stay Focused";
+    this.pageGuideDescriptionElement.textContent = "Type as fast as you can";
     this.inputElement.value = "";
   }
 
@@ -84,7 +94,30 @@ export default class Document {
    * @method
    */
   pauseGame() {
-    this.pageGuideElement.textContent = "PAUSED";
+    this.pageGuideElement.textContent = "Game is paused";
+    this.pageGuideDescriptionElement.textContent =
+      "Click on the input field to continue playing";
     this.inputElement.value = "";
+  }
+
+  /**
+   * Changes the page guide element to in progress state
+   * Resets the input element's value
+   * In short, it will resume the game
+   * @method
+   */
+  resumeGame() {
+    this.pageGuideElement.textContent = "Game is resumed";
+    this.pageGuideDescriptionElement.textContent = "Type as fast as you can";
+    this.inputElement.value = "";
+  }
+
+  /**
+   * Changes the Page Guide description text
+   * @method
+   * @param {String} description
+   */
+  pageGuideDescription(description) {
+    this.pageGuideDescriptionElement.textContent = description;
   }
 }

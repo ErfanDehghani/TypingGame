@@ -1,4 +1,5 @@
 import Document from "./Doc.js";
+import Timer from "./Timer.js";
 
 export default class Game {
   /**
@@ -62,12 +63,15 @@ export default class Game {
 
   /**
    * Will listen for focusin
-   * and starts the game if it is not already started abd resumes the game if it is paused
+   * Checks state of the game and will resume the game if its paused and starts the game if its not
    * @method
    */
   inputFocusInListener() {
+    this.state == Game.State.PAUSED
+      ? this.resume()
+      : this.start();
+
     this.stateToInProgress();
-    this.doc.gameInit();
   }
 
   /**
@@ -80,14 +84,42 @@ export default class Game {
   }
 
   /**
+   * Resumes the game
+   * @method
+   */
+  resume() {
+    let timer = new Timer(3, this.doc.pageGuideElement);
+
+    this.doc.pageGuideDescription("Wait for it!")
+
+    timer.start().then(()=>{
+      this.doc.resumeGame();
+      this.stateToInProgress;
+    });
+  }
+
+  /**
+   * Start the game
+   * @method
+   */
+  start() {
+    let timer = new Timer(3, this.doc.pageGuideElement);
+
+    this.doc.pageGuideDescription("Wait for it!")
+
+    timer.start().then(()=>{
+      this.doc.gameInit();
+      this.stateToInProgress;
+    });
+  }
+
+  /**
    * Will pause the game
    * @method
    */
   pause() {
-    // Setting games state to paused
     this.stateToPaused();
 
-    // Make the document to change its state to paused
     this.doc.pauseGame();
   }
 
@@ -95,7 +127,7 @@ export default class Game {
    * changes state of the game to in progress the game
    * @method
    */
-  stateToInProgress() {
+  stateToInProgress() {  
     this.state = Game.State.IN_PROGRESS;
   }
 

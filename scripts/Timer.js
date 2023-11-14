@@ -6,9 +6,9 @@
  */
 export default class Timer {
   /**
-   * @property {string} timerTagId - The ID of the HTML element to update with the remaining time.
+   * @property {Element} timerElement - The ID of the HTML element to update with the remaining time.
    */
-  timerTagId;
+  timerElement;
 
   /**
    * @property {number} timeLimit - The time limit in seconds.
@@ -18,30 +18,32 @@ export default class Timer {
   /**
    * @constructor
    * @param {number} timeLimit - The time limit in seconds.
-   * @param {string} timerTagId - The ID of the HTML element to update with the remaining time.
+   * @param {Element} timerElement - The ID of the HTML element to update with the remaining time.
    */
-  constructor(timeLimit, timerTagId) {
-    this.timerTagId = timerTagId;
+  constructor(timeLimit, timerElement) {
+    this.timerElement = timerElement;
     this.timeLimit = timeLimit;
   }
 
   /**
    * Starts the timer.
-   * With the given html tag as timer, it changes the text inside that tag
-   * to mach the timer each second.
+   * With the given HTML tag as a timer, it changes the text inside that tag
+   * to match the timer each second.
+   * @returns {Promise} A promise that resolves when the timer is over.
    */
   start() {
-    const timerTag = document.querySelector(this.timerTagId);
+    return new Promise((resolve) => {
+      this.timerElement.textContent = this.timeLimit;
 
-    timerTag.innerText = this.timeLimit;
+      const timerInterval = window.setInterval(() => {
+        let time = parseInt(this.timerElement.textContent) - 1;
+        this.timerElement.textContent = time;
 
-    const timerInterval = window.setInterval(() => {
-      let time = parseInt(timerTag.innerText) - 1;
-      timerTag.innerText = `${time}s`;
-
-      if (time === 0) {
-        clearInterval(timerInterval);
-      }
-    }, 1000);
+        if (time === 0) {
+          clearInterval(timerInterval);
+          resolve("Timer is over!");
+        }
+      }, 1000);
+    });
   }
 }
