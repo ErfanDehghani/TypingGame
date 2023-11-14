@@ -69,12 +69,26 @@ export default class Game {
 
     /**
      * Will track the focusout event and pauses the game if it is playing
-     * if the game has ended this will do nothing right now
+     * if the game has ended this will do nothing
      * @method
      */
-    inputFocusOutListener() {
+    inputFocusOutListener()
+    {
+
+        this.pause()
+    }
+
+    /**
+     * Will pause the game
+     * @method
+     */
+    pause()
+    {
+        // Setting games state to paused
         this.stateToPaused();
-        // this.doc.pauseGame();
+
+        // Make the document to change its state to paused
+        this.doc.pauseGame();
     }
 
 
