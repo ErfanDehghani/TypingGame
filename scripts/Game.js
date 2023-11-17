@@ -27,6 +27,13 @@ export default class Game {
   doc;
 
   /**
+   * Game Typing content is saved in this property
+   * @type {String}
+   * @property
+   */
+  currentContent;
+
+  /**
    * changes the state of the game
    * sets the document
    * initializes the game
@@ -40,6 +47,9 @@ export default class Game {
     // setting the input field
     this.doc = Document;
 
+    // Setting game content
+    this.currentContent = "The bikers rode down the long and narrow path to reach the city park. When they reached a good spot to rest, they began to look for signs of spring. The sun was bright, and a lot of bright red and blue blooms proved to all that warm spring days were the very best. Spring rides were planned. They had a burger at the lake and then rode farther up the mountain. As one rider started to get off his bike, he slipped and fell. One of the other bikers saw him fall but could do nothing to help him. Neither the boy nor the bike got hurt. After a brief stop, everyone was ready to go on. All the bikers enjoyed the nice view when they came to the top. All the roads far below them looked like ribbons. A dozen or so boats could be seen on the lake. It was very quiet and peaceful and no one wished to leave. As they set out on their return, they all enjoyed the ease of pedaling. The bikers came upon a new bike trail. This route led to scenery far grander than that seen from the normal path. The end of the day brought laughs and cheers from everyone. The fact that each person was very, very tired did not keep anyone from eagerly planning for the exciting ride to come.";
+
     // game init
     this.initGame();
   }
@@ -50,7 +60,7 @@ export default class Game {
    * @method
    */
   initGame() {
-    // Binding the event listener function reference
+    // Input Element Event Listeners
     this.doc.inputElement.addEventListener(
       "focusin",
       this.inputFocusInListener.bind(this)
@@ -59,7 +69,65 @@ export default class Game {
       "focusout",
       this.inputFocusOutListener.bind(this)
     );
+    // End of input Element event listeners
+
+    // Setting page content
+    this.setGameContent();
+
+    // Document event listener
+    // Handles typing
+    // this.doc.inputElement.addEventListener(
+    //     "keypress",
+    //     this.typeHandler.bind(event)
+    // )
   }
+
+  setGameContent() {
+    let content = document.querySelector(".content")
+    content.classList.remove("centered");
+    content.classList.add("percent");
+    content.textContent = null;
+    const clearContent = this.currentContent.replace(/(\d)[\s.]+(?=\d)/g, "$1");
+    console.log(clearContent);
+
+    this.currentContent.split(/[ ,.]+/).forEach((char) => {
+      const charSpan = document.createElement("span");
+      charSpan.innerText = char;
+      content.appendChild(charSpan);
+    });
+  }
+
+  /**
+   * Handles typing in the game
+   * everytime the event fires, it will check the key that has fired the event and if it was related to typing the given text
+   * it will handle the key
+   * @method
+   * @param {Event, KeyboardEvent} event
+   */
+  // typeHandler(event)
+  // {
+  //   console.log(`${event.key}'s code is : ${event.code}`);
+  //   const keyPressed = String.fromCharCode(event.key).toUpperCase();
+  //   const keyElement = document.getElementById(keyPressed);
+  //   const highlightedKey = document.querySelector(".selected");
+  //
+  //   keyElement.classList.add("hit");
+  //   keyElement.addEventListener("animationend", () => {
+  //     keyElement.classList.remove("hit");
+  //   });
+  //
+  //   if (keyPressed === highlightedKey.innerHTML) {
+  //     highlightedKey.classList.remove("selected");
+  //     updateChar();
+  //   } else {
+  //     const input = document.getElementById("input");
+  //     input.value = "";
+  //     errorCounter++;
+  //     const errors = document.getElementById("init_errors");
+  //     errors.innerText = `${errorCounter}`;
+  //     console.log(`er:${errors.innerText}`);
+  //   }
+  // }
 
   /**
    * Will listen for focusin
@@ -67,7 +135,7 @@ export default class Game {
    * @method
    */
   inputFocusInListener() {
-    this.state == Game.State.PAUSED
+    this.state === Game.State.PAUSED
       ? this.resume()
       : this.start();
 
