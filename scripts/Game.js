@@ -83,17 +83,12 @@ export default class Game {
   }
 
   setGameContent() {
-    let content = document.querySelector(".content")
-    content.classList.remove("centered");
-    content.classList.add("percent");
-    content.textContent = null;
+    this.doc.content = null;
     const clearContent = this.currentContent.replace(/(\d)[\s.]+(?=\d)/g, "$1");
-    console.log(clearContent);
-
     this.currentContent.split(/[ ,.]+/).forEach((char) => {
       const charSpan = document.createElement("span");
       charSpan.innerText = char;
-      content.appendChild(charSpan);
+      this.doc.appendToContent(charSpan);
     });
   }
 

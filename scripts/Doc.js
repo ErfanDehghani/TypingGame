@@ -1,5 +1,5 @@
 /**
- * This Class is responsible for alternating the dom based on the how game goes
+ * This Class is responsible for alternating the dom based on how game goes
  */
 export default class Document {
   // ScoreBoard properties ----------------------------------------------------
@@ -16,7 +16,7 @@ export default class Document {
    */
   wordPerMinuteElement = this.$("scoreBoard_WPM");
   /**
-   * the current game's errors element'
+   * the current game's errors element
    * @property
    * @type {Element}
    */
@@ -32,18 +32,23 @@ export default class Document {
    */
   pageGuideElement = this.$("pageGuide");
   /**
-   * input files
-   * @property
-   * @type {Element}
-   */
-  inputElement = this.$("input");
-
-  /**
    * Element responsible for displaying information smaller than pageGuide element under it
    * @property
    * @type {Element}
    */
   pageGuideDescriptionElement = this.$("pageGuideDescription");
+  /**
+   * input files
+   * @property
+   * @type {Element}
+   */
+  inputElement = this.$("input");
+  /**
+   * contains the text that user has to type
+   * @property
+   * @type {Element}
+   */
+  textContainer = this.$('textContainer');
 
   /**
    * @constructor
@@ -62,7 +67,7 @@ export default class Document {
    * @method
    */
   $(elementId) {
-    return document.querySelector("#" + elementId);
+    return document.getElementById(elementId);
   }
 
   /**
@@ -88,7 +93,7 @@ export default class Document {
   }
 
   /**
-   * Changes the page guide element to paased state
+   * Changes the page guide element to passed state
    * Resets the input element's value
    * In short, it will pause the game
    * @method
@@ -119,5 +124,15 @@ export default class Document {
    */
   pageGuideDescription(description) {
     this.pageGuideDescriptionElement.textContent = description;
+  }
+
+  /**
+   * this will append the child to the specified element
+   * @method
+   * @param {Element} child
+   */
+  appendToContent(child)
+  {
+    this.textContainer.appendChild(child);
   }
 }

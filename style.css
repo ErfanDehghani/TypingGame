@@ -400,18 +400,7 @@ li {
   /* background-color: #141d2b; */
 }
 
-.percent {
-  /* background-color: #fff; */
-  width: 85%;
-}
-
 .hidden {
   display: none;
-}
-
-.centered {
-  display: flex;
-  justify-content: center;
-  /* align-items: center; */
 }
 
