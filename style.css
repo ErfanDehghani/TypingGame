@@ -392,11 +392,15 @@ li {
   /* color: #fcdae3; */
 }
 
+.percent {
+  /* background-color: #fff; */
+  width: 85%;
+}
+
 .content {
   overflow: hidden;
   display: flex;
   align-items: center;
-  overflow: hidden;
   /* background-color: #141d2b; */
 }
 
@@ -404,3 +408,14 @@ li {
   display: none;
 }
 
+.centered {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+/* textContainer */
+#textContainer
+{
+  margin-bottom: 2rem;
+}

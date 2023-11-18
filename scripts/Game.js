@@ -34,6 +34,13 @@ export default class Game {
   currentContent;
 
   /**
+   * Character error counter
+   * @type {int}
+   * @property
+   */
+  errorCounter;
+
+  /**
    * changes the state of the game
    * sets the document
    * initializes the game
@@ -52,6 +59,9 @@ export default class Game {
 
     // game init
     this.initGame();
+
+    // error counter initialization
+    this.errorCounter = 0;
   }
 
   /**
@@ -76,20 +86,14 @@ export default class Game {
 
     // Document event listener
     // Handles typing
-    // this.doc.inputElement.addEventListener(
-    //     "keypress",
-    //     this.typeHandler.bind(event)
-    // )
+    this.doc.inputElement.addEventListener(
+        "keypress",
+        (event) => this.typeHandler(event)
+    )
   }
 
   setGameContent() {
-    this.doc.content = null;
-    const clearContent = this.currentContent.replace(/(\d)[\s.]+(?=\d)/g, "$1");
-    this.currentContent.split(/[ ,.]+/).forEach((char) => {
-      const charSpan = document.createElement("span");
-      charSpan.innerText = char;
-      this.doc.appendToContent(charSpan);
-    });
+    this.doc.setContent(this.currentContent)
   }
 
   /**
@@ -99,30 +103,27 @@ export default class Game {
    * @method
    * @param {Event, KeyboardEvent} event
    */
-  // typeHandler(event)
-  // {
-  //   console.log(`${event.key}'s code is : ${event.code}`);
-  //   const keyPressed = String.fromCharCode(event.key).toUpperCase();
-  //   const keyElement = document.getElementById(keyPressed);
-  //   const highlightedKey = document.querySelector(".selected");
-  //
-  //   keyElement.classList.add("hit");
-  //   keyElement.addEventListener("animationend", () => {
-  //     keyElement.classList.remove("hit");
-  //   });
-  //
-  //   if (keyPressed === highlightedKey.innerHTML) {
-  //     highlightedKey.classList.remove("selected");
-  //     updateChar();
-  //   } else {
-  //     const input = document.getElementById("input");
-  //     input.value = "";
-  //     errorCounter++;
-  //     const errors = document.getElementById("init_errors");
-  //     errors.innerText = `${errorCounter}`;
-  //     console.log(`er:${errors.innerText}`);
-  //   }
-  // }
+  typeHandler(event) {
+    // your existing code
+    const keyPressed = event.key.toUpperCase();
+    const keyElement = document.getElementById(keyPressed);
+    const highlightedKey = document.querySelector(".selected");
+
+    keyElement.classList.add("hit");
+    keyElement.addEventListener("animationend", () => {
+      keyElement.classList.remove("hit");
+    });
+
+    if (keyPressed === highlightedKey.innerHTML) {
+      highlightedKey.classList.remove("selected");
+      this.updateChar(); // Assuming updateChar is a method of your class
+    } else {
+      const input = document.getElementById("input");
+      input.value = "";
+      this.errorCounter++;
+      this.doc.errorsElement.innerText = `${this.errorCounter}`;
+    }
+  }
 
   /**
    * Will listen for focusin

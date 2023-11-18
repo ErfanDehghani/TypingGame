@@ -129,10 +129,17 @@ export default class Document {
   /**
    * this will append the child to the specified element
    * @method
-   * @param {Element} child
+   * @param {string} displayedText
    */
-  appendToContent(child)
+  setContent(displayedText)
   {
-    this.textContainer.appendChild(child);
+    this.textContainer.classList.remove("centered");
+    this.textContainer.classList.add("percent");
+    this.textContainer.textContent = null;
+    displayedText.split(/[ ,.]+/).forEach((char) => {
+      const charSpan = document.createElement("span");
+      charSpan.innerText = char;
+      this.textContainer.appendChild(charSpan);
+    });
   }
 }
