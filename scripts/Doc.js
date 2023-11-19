@@ -51,6 +51,13 @@ export default class Document {
   textContainer = this.$('textContainer');
 
   /**
+   * will hold add the keys that can be typed
+   * @property
+   * @type {array}
+   */
+  keys = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
+
+  /**
    * @constructor
    * the constructor will make changes to make the Doc ready for player to start the game
    */
@@ -136,10 +143,51 @@ export default class Document {
     this.textContainer.classList.remove("centered");
     this.textContainer.classList.add("percent");
     this.textContainer.textContent = null;
+
     displayedText.split(/[ ,.]+/).forEach((char) => {
       const charSpan = document.createElement("span");
       charSpan.innerText = char;
       this.textContainer.appendChild(charSpan);
     });
   }
+
+  /**
+   * this will animate hitting a key
+   * @method
+   * @param keyCode {string}
+   */
+  hit(keyCode) {
+    // gets the targeted element and adds hit effect to it
+    const keyPressed = keyCode.toUpperCase();
+    const keyElement = document.getElementById(keyPressed);
+
+    keyElement.classList.add("hit");
+    keyElement.addEventListener("animationend", () => {
+      keyElement.classList.remove("hit");
+    });
+  }
+
+  /**
+   * this will animate the key that is supposed to be clicked
+   * @method
+   * @param key {string}
+   */
+  newTarget(key) {
+    if (document.querySelector(".selected") !== null)
+      document.querySelector(".selected").classList.remove('selected');
+    let keyToBeClicked = this.$(key.toUpperCase())
+    keyToBeClicked.classList.add('selected')
+  }
+
+  /**
+   * add a completed style to the word
+   * @method
+   * @param wordCounter {int}
+   */
+  wordTyped(wordCounter)
+  {
+    console.log(this.textContainer.children[wordCounter])
+    // this.textContainer.children[wordCounter].classList.add("completed");
+  }
+
 }
