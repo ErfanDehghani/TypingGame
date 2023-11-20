@@ -116,15 +116,16 @@ export default class Game {
     );
     // End of input Element event listeners
 
-    // Setting page content
-    this.setGameContent();
 
     // Document event listener
-    // Handles typing
     this.doc.inputElement.addEventListener(
-        "keypress",
+        "keyup",
         (event) => this.typeHandler(event)
     )
+
+
+    // Setting page content
+    this.setGameContent();
   }
 
   setGameContent() {
@@ -137,6 +138,9 @@ export default class Game {
 
     // Setting target key
     this.doc.newTarget(this.currentWord.charAt(this.characterCounter));
+
+    // Setting Words that need to be typed
+    this.doc.updateWord(this.wordCounter)
   }
 
   /**
@@ -152,33 +156,72 @@ export default class Game {
 
     const highlightedKey = document.querySelector(".selected");
 
-    this.doc.hit(keyPressedId)
+    // check to see if the pressed key is not space
+    if (keyPressedId !== " ")
+    {
+      this.doc.hit(keyPressedId)
 
-    if (keyPressedId === highlightedKey.id) {
-      // Updating game's chosen character
-      this.updateChar()
+      if (keyPressedId === highlightedKey.id) {
+        // Updating game's chosen character
+        this.updateChar()
+      } else {
+
+        // Wrong key effect
+        this.doc.wrongKey(keyPressedId);
+
+        // Wrong ket Actions
+        this.wrongKey();
+      }
     } else {
-      const input = document.getElementById("input");
-      input.value = "";
-      this.errorCounter++;
-      this.doc.errorsElement.innerText = `${this.errorCounter}`;
+
     }
+
   }
 
   /**
+   * User has pressed the wrong key
+   */
+  wrongKey() {
+    // Adds to error made
+    this.errorCounter++;
+    this.doc.errorsElement.innerText = `${this.errorCounter}`;
+  }
+
+  /**
+   * Updates the game if user has clicked the right key
    * @method
    */
   updateChar() {
-    if (this.currentCharacter !== " ") {
+
+    // Checks to see if word is done
+    if (this.nextCharacter() !== "") {
+      // Not done
       this.doc.newTarget(this.nextCharacter());
       this.characterCounter++;
       this.currentCharacter = this.currentWord.charAt(this.characterCounter);
     } else{
-      this.doc.wordTyped(this.wordCounter);
-      content.children[counterWord].classList.add("completed"); //better way found:D
-      counterChar = 0;
-      updateWord(true);
+      // Done
+      this.characterCounter = 0;
+
+      // This will also update the Current word property
+      this.updateWord();
+      // Resets the current character to the first character in the new word
+      this.currentCharacter = this.currentWord.charAt(this.currentCharacter)
+      // Adds the target effect to the key
+      this.doc.newTarget(this.currentCharacter);
     }
+  }
+
+  /**
+   * When the word is typed, it will make its display = none and it and update the next words
+   */
+  updateWord() {
+    this.doc.wordTyped(this.wordCounter);
+
+    this.currentWord = this.currentContentArray[++this.wordCounter]
+
+    // Adds the effects to next words in the list
+    this.doc.updateWord(this.wordCounter)
   }
 
   /**
@@ -187,9 +230,6 @@ export default class Game {
    * @return {String}
    */
   nextCharacter() {
-    if (this.currentWord.charAt(this.characterCounter + 1) === '')
-      return this.nextWord().charAt(0);
-    else
       return this.currentWord.charAt(this.characterCounter + 1)
   }
   /**

@@ -173,6 +173,7 @@ li {
 
 .content .completed {
   opacity: 0.4;
+  display: none;
   color: #f24471;
 }
 

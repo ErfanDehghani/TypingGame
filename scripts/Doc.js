@@ -96,7 +96,7 @@ export default class Document {
     this.scoreBoardReset();
     this.pageGuideElement.textContent = "Stay Focused";
     this.pageGuideDescriptionElement.textContent = "Type as fast as you can";
-    this.inputElement.value = "";
+    this.emptyInput();
   }
 
   /**
@@ -109,7 +109,7 @@ export default class Document {
     this.pageGuideElement.textContent = "Game is paused";
     this.pageGuideDescriptionElement.textContent =
       "Click on the input field to continue playing";
-    this.inputElement.value = "";
+    this.emptyInput();
   }
 
   /**
@@ -121,7 +121,7 @@ export default class Document {
   resumeGame() {
     this.pageGuideElement.textContent = "Game is resumed";
     this.pageGuideDescriptionElement.textContent = "Type as fast as you can";
-    this.inputElement.value = "";
+    this.emptyInput();
   }
 
   /**
@@ -176,7 +176,9 @@ export default class Document {
     if (document.querySelector(".selected") !== null)
       document.querySelector(".selected").classList.remove('selected');
     let keyToBeClicked = this.$(key.toUpperCase())
-    keyToBeClicked.classList.add('selected')
+
+    if (keyToBeClicked !== null)
+      keyToBeClicked.classList.add('selected')
   }
 
   /**
@@ -187,7 +189,35 @@ export default class Document {
   wordTyped(wordCounter)
   {
     console.log(this.textContainer.children[wordCounter])
-    // this.textContainer.children[wordCounter].classList.add("completed");
+    this.textContainer.children[wordCounter].classList.add("completed");
+  }
+
+  /**
+   * this will give effect to the current and the next word
+   * @method
+   * @param wordCounter {int}
+   */
+  updateWord(wordCounter){
+    this.emptyInput();
+    this.textContainer.children[wordCounter].classList.add("bolded");
+    this.textContainer.children[wordCounter + 1].classList.add("semi-bold");
+  }
+
+  /**
+   * Empties the input element
+   * @method
+   */
+  emptyInput() {
+    this.inputElement.value = "";
+  }
+
+  /**
+   * Wrong key pressed effect
+   * @method
+   * @param key {string}
+   */
+  wrongKey() {
+
   }
 
 }
