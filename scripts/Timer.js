@@ -61,8 +61,6 @@ export default class Timer {
    */
   trackGame(game) {
     document.addEventListener('stateChange', () => {
-      console.log(game.state)
-      console.log(game.State.IN_PROGRESS)
       if (game.state === game.State.IN_PROGRESS)
         this.start();
       else {
