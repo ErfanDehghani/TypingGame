@@ -16,6 +16,13 @@ export default class Timer {
   timeLimit;
 
   /**
+   * Timer itself
+   * @property
+   * @type {int}
+   */
+  timer;
+
+  /**
    * @constructor
    * @param {number} timeLimit - The time limit in seconds.
    * @param {Element} timerElement - The ID of the HTML element to update with the remaining time.
@@ -35,15 +42,34 @@ export default class Timer {
     return new Promise((resolve) => {
       this.timerElement.textContent = this.timeLimit;
 
-      const timerInterval = window.setInterval(() => {
-        let time = parseInt(this.timerElement.textContent) - 1;
-        this.timerElement.textContent = time;
+      this.timer = window.setInterval(() => {
+        this.timeLimit = this.timeLimit - 1;
+        this.timerElement.textContent = this.timeLimit;
 
-        if (time === 0) {
-          clearInterval(timerInterval);
+        if (this.timeLimit === 0) {
+          clearInterval(this.timer);
           resolve("Timer is over!");
         }
       }, 1000);
     });
   }
+
+  /**
+   * Tracks a given game's time based on its state
+   * @method
+   * @param {Game} game
+   */
+  trackGame(game) {
+    document.addEventListener('stateChange', () => {
+      console.log(game.state)
+      console.log(game.State.IN_PROGRESS)
+      if (game.state === game.State.IN_PROGRESS)
+        this.start();
+      else {
+        this.timeLimit;
+        clearInterval(this.timer);
+      }
+    });
+  }
+
 }

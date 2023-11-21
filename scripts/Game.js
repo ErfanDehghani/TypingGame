@@ -4,13 +4,14 @@ import Timer from "./Timer.js";
 export default class Game {
   /**
    * These are the states that the game is currently in.
-   * @type {{WAITING_TO_START: number, IN_PROGRESS: number, PAUSED: number, FINISHED: number}}
+   * @type {{IN_TRANSITION: number, IN_PROGRESS: number, PAUSED: number, FINISHED: number}}
    */
-  static State = {
-    WAITING_TO_START: 0,
+  State = {
+    IN_TRANSITION: 0,
     IN_PROGRESS: 1,
     PAUSED: 2,
     FINISHED: 3,
+    WAITING_TO_START: 4,
   };
 
   /**
@@ -71,6 +72,12 @@ export default class Game {
    */
   characterCounter= 0;
 
+  /**
+   * This event triggers on state change
+   * @type {Event}
+   */
+  stateChangeEvent = new Event('stateChange');
+
 
   /**
    * changes the state of the game
@@ -81,7 +88,7 @@ export default class Game {
    */
   constructor(Document) {
     // changing state of the game
-    this.state = Game.State.WAITING_TO_START;
+    this.state = this.State.WAITING_TO_START;
 
     // setting the input field
     this.doc = Document;
@@ -123,6 +130,8 @@ export default class Game {
         (event) => this.typeHandler(event)
     )
 
+    let gameTimer = new Timer(60, this.doc.timerElement)
+    gameTimer.trackGame(this)
 
     // Setting page content
     this.setGameContent();
@@ -247,11 +256,10 @@ export default class Game {
    * @method
    */
   inputFocusInListener() {
-    this.state === Game.State.PAUSED
-      ? this.resume()
-      : this.start();
-
-    this.stateToInProgress();
+    if (this.state !== this.State.IN_TRANSITION)
+      this.state === this.State.PAUSED
+        ? this.resume()
+        : this.start();
   }
 
   /**
@@ -260,7 +268,8 @@ export default class Game {
    * @method
    */
   inputFocusOutListener() {
-    this.pause();
+    if (this.state !== this.State.IN_TRANSITION)
+      this.pause();
   }
 
   /**
@@ -272,9 +281,12 @@ export default class Game {
 
     this.doc.pageGuideDescription("Wait for it!")
 
+    // This will ensure that game wont try to do anything while going through a transition
+    this.stateToWaitingToStart();
+
     timer.start().then(()=>{
       this.doc.resumeGame();
-      this.stateToInProgress;
+      this.stateToInProgress();
     });
   }
 
@@ -287,9 +299,12 @@ export default class Game {
 
     this.doc.pageGuideDescription("Wait for it!")
 
+    // This will ensure that game wont try to do anything while going through a transition
+    this.stateToWaitingToStart();
+
     timer.start().then(()=>{
       this.doc.gameInit();
-      this.stateToInProgress;
+      this.stateToInProgress();
     });
   }
 
@@ -308,7 +323,8 @@ export default class Game {
    * @method
    */
   stateToInProgress() {  
-    this.state = Game.State.IN_PROGRESS;
+    this.state = this.State.IN_PROGRESS;
+    this.dispatchEvent();
   }
 
   /**
@@ -316,7 +332,8 @@ export default class Game {
    * @method
    */
   stateToPaused() {
-    this.state = Game.State.PAUSED;
+    this.state = this.State.PAUSED;
+    this.dispatchEvent();
   }
 
   /**
@@ -324,7 +341,8 @@ export default class Game {
    * @method
    */
   stateToFinished() {
-    this.state = Game.State.FINISHED;
+    this.state = this.State.FINISHED;
+    this.dispatchEvent();
   }
 
   /**
@@ -332,6 +350,36 @@ export default class Game {
    * @method
    */
   stateToWaitingToStart() {
-    this.state = Game.State.WAITING_TO_START;
+    this.state = this.State.IN_TRANSITION;
+    this.dispatchEvent();
   }
+
+  /**
+   * Notify listeners when the state changes
+   * @method
+   */
+  dispatchEvent() {
+    // Dispatch the custom event
+    document.dispatchEvent(this.stateChangeEvent);
+  }
+
+
+  /**
+   * Add a listener for state changes
+   * @method
+   * @param {Function} callback - The callback function to be executed when the state changes.
+   */
+  addStateChangeListener(callback) {
+    document.addEventListener('stateChange', callback);
+  }
+
+  /**
+   * Remove a listener for state changes
+   * @method
+   * @param {Function} callback - The callback function to be removed.
+   */
+  removeStateChangeListener(callback) {
+    document.removeEventListener('stateChange', callback);
+  }
+
 }

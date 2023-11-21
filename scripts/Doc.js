@@ -21,6 +21,12 @@ export default class Document {
    * @type {Element}
    */
   errorsElement = this.$("scoreBoard_errors");
+  /**
+   * ScoreBoards timer Element
+   * @property
+   * @type {Element}
+   */
+  timerElement= this.$("scoreBoard_time");
 
   // other properties ----------------------------------------------------
 
