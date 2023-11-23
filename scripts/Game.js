@@ -130,7 +130,9 @@ export default class Game {
         (event) => this.typeHandler(event)
     )
 
-    let gameTimer = new Timer(60, this.doc.timerElement)
+    let gameTimer = new Timer(10, this.doc.timerElement, ()=>{
+      console.log('shit')
+    })
     gameTimer.trackGame(this)
 
     // Setting page content
@@ -161,30 +163,33 @@ export default class Game {
    */
   typeHandler(event) {
 
-    const keyPressedId = event.key.toUpperCase()
-
-    const highlightedKey = document.querySelector(".selected");
-
-    // check to see if the pressed key is not space
-    if (keyPressedId !== " ")
+    if (this.state === this.State.IN_PROGRESS)
     {
-      this.doc.hit(keyPressedId)
+      const keyPressedId = event.key.toUpperCase()
 
-      if (keyPressedId === highlightedKey.id) {
-        // Updating game's chosen character
-        this.updateChar()
-      } else {
+      const highlightedKey = document.querySelector(".selected");
 
-        // Wrong key effect
-        this.doc.wrongKey(keyPressedId);
+      // check to see if the pressed key is not space
+      if (keyPressedId !== " ")
+      {
+        this.doc.hit(keyPressedId)
 
-        // Wrong ket Actions
-        this.wrongKey();
+        if (keyPressedId === highlightedKey.id) {
+          // Updating game's chosen character
+          this.updateChar()
+        } else {
+
+          // Wrong key effect
+          this.doc.wrongKey(keyPressedId);
+
+          // Wrong ket Actions
+          this.wrongKey();
+        }
       }
-    } else {
-
+    }else
+    {
+      this.doc.emptyInput();
     }
-
   }
 
   /**

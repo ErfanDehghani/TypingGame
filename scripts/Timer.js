@@ -62,7 +62,9 @@ export default class Timer {
   trackGame(game) {
     document.addEventListener('stateChange', () => {
       if (game.state === game.State.IN_PROGRESS)
-        this.start();
+        this.start().then(() => {
+          game.stateToFinished();
+        });
       else {
         this.timeLimit;
         clearInterval(this.timer);
