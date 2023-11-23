@@ -27,6 +27,12 @@ export default class Document {
    * @type {Element}
    */
   timerElement= this.$("scoreBoard_time");
+  /**
+   * ScoreBoards accuracy element
+   * @property
+   * @type {Element}
+   */
+  accuracyElement = this.$("ScoreBoard_accuracy");
 
   // other properties ----------------------------------------------------
 
@@ -194,7 +200,6 @@ export default class Document {
    */
   wordTyped(wordCounter)
   {
-    console.log(this.textContainer.children[wordCounter])
     this.textContainer.children[wordCounter].classList.add("completed");
   }
 
@@ -218,12 +223,22 @@ export default class Document {
   }
 
   /**
-   * Wrong key pressed effect
+   * Updates scoreboard information
    * @method
-   * @param key {string}
+   * @param accuracy {int}
+   * @param WPM {int}
    */
-  wrongKey() {
-
+  updateScoreBoard(accuracy, WPM){
+    this.accuracyElement.textContent = Math.floor(accuracy) + "%";
+    this.wordPerMinuteElement.textContent = WPM;
   }
 
+  /**
+   * Wrong key effect
+   * @param key {string}
+   * @method
+   */
+  wrongKey(key) {
+
+  }
 }

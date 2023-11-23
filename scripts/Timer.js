@@ -72,4 +72,8 @@ export default class Timer {
     });
   }
 
+  getTimeLimit(){
+    return this.timeLimit;
+  }
+
 }

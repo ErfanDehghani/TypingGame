@@ -15,6 +15,19 @@ export default class Game {
   };
 
   /**
+   * Game's time limit
+   * @property
+   * @type {int}
+   */
+  timeLimit = 60;
+  /**
+   * Game's Timer
+   * @property
+   * @type {Timer}
+   */
+  gameTimer;
+
+  /**
    * @type {Game.State}
    * @property
    */
@@ -71,6 +84,19 @@ export default class Game {
    * @property'
    */
   characterCounter= 0;
+
+  /**
+   * Number of characters that were typed wrong
+   * @type {int}
+   * @property
+   */
+  wrongCharacterCounter= 0;
+  /**
+   * Number of characters that were typed right
+   * @type {int}
+   * @property
+   */
+  rightCharacterCounter = 0;
 
   /**
    * This event triggers on state change
@@ -130,10 +156,9 @@ export default class Game {
         (event) => this.typeHandler(event)
     )
 
-    let gameTimer = new Timer(10, this.doc.timerElement, ()=>{
-      console.log('shit')
-    })
-    gameTimer.trackGame(this)
+    // Track the game
+    this.gameTimer = new Timer(this.timeLimit, this.doc.timerElement);
+    this.gameTimer.trackGame(this)
 
     // Setting page content
     this.setGameContent();
@@ -177,6 +202,10 @@ export default class Game {
         if (keyPressedId === highlightedKey.id) {
           // Updating game's chosen character
           this.updateChar()
+
+          // Update right Character counter
+          this.rightCharacterCounter++;
+
         } else {
 
           // Wrong key effect
@@ -185,6 +214,10 @@ export default class Game {
           // Wrong ket Actions
           this.wrongKey();
         }
+
+        // Updates the scoreboard after each right choice
+        this.updateScoreBoard();
+
       }
     }else
     {
@@ -236,6 +269,14 @@ export default class Game {
 
     // Adds the effects to next words in the list
     this.doc.updateWord(this.wordCounter)
+  }
+
+  updateScoreBoard() {
+    let newAccuracy = this.rightCharacterCounter * 100 / (this.rightCharacterCounter + this.errorCounter);
+    let WPM = this.wordCounter;
+
+    // Updates games scoreboard
+    this.doc.updateScoreBoard(newAccuracy, WPM);
   }
 
   /**
