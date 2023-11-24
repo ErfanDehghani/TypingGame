@@ -58,12 +58,13 @@ export default class Timer {
    * Tracks a given game's time based on its state
    * @method
    * @param {Game} game
+   * @param {Function} callback
    */
-  trackGame(game) {
+  trackGame(game, callback) {
     document.addEventListener('stateChange', () => {
       if (game.state === game.State.IN_PROGRESS)
         this.start().then(() => {
-          game.stateToFinished();
+          callback();
         });
       else {
         this.timeLimit;

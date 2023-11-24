@@ -15,6 +15,26 @@ export default class Game {
   };
 
   /**
+   * Playes score list
+   * @property
+   */
+  playerList = JSON.parse(localStorage.getItem("players") || "[]")
+
+  /**
+   * User's accuracy
+   * @property
+   * @type {int}
+   */
+  userAccuracy;
+  /**
+   * User's Word per minute
+   * @property
+   * @type {int}
+   */
+  userWPM
+
+
+  /**
    * Game's time limit
    * @property
    * @type {int}
@@ -104,6 +124,13 @@ export default class Game {
    */
   stateChangeEvent = new Event('stateChange');
 
+  /**
+   * Holds the player's student id
+   * @type {string}
+   * @property
+   */
+  player;
+
 
   /**
    * changes the state of the game
@@ -124,6 +151,9 @@ export default class Game {
 
     // Games content as an array of characters
     this.currentContentArray = this.currentContent.split(/[ ,.]+/);
+
+    // Saving users student id
+    this.player = window.prompt("Please enter your student id");
 
     // game init
     this.initGame();
@@ -158,7 +188,10 @@ export default class Game {
 
     // Track the game
     this.gameTimer = new Timer(this.timeLimit, this.doc.timerElement);
-    this.gameTimer.trackGame(this)
+    this.gameTimer.trackGame(this, ()=>{
+      this.stateToFinished();
+      this.saveData();
+    })
 
     // Setting page content
     this.setGameContent();
@@ -272,8 +305,8 @@ export default class Game {
   }
 
   updateScoreBoard() {
-    let newAccuracy = this.rightCharacterCounter * 100 / (this.rightCharacterCounter + this.errorCounter);
-    let WPM = this.wordCounter;
+    this.userAccuracy = this.rightCharacterCounter * 100 / (this.rightCharacterCounter + this.errorCounter);
+    this.userWPM = this.wordCounter;
 
     // Updates games scoreboard
     this.doc.updateScoreBoard(newAccuracy, WPM);
@@ -426,6 +459,21 @@ export default class Game {
    */
   removeStateChangeListener(callback) {
     document.removeEventListener('stateChange', callback);
+  }
+
+  /**
+   * the method will save game's data into browser cache
+   * @method
+   */
+  saveData() {
+    let person = {
+      StudentId: this.player,
+      WPM: this.userWPM,
+      Accuracy: this.userAccuracy
+    };
+
+    this.playerList.push(person);
+    localStorage.setItem("players", JSON.stringify(this.playerList));
   }
 
 }
