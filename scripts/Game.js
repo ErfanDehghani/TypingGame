@@ -309,7 +309,7 @@ export default class Game {
     this.userWPM = this.wordCounter;
 
     // Updates games scoreboard
-    this.doc.updateScoreBoard(newAccuracy, WPM);
+    this.doc.updateScoreBoard(this.userAccuracy, this.userWPM);
   }
 
   /**
